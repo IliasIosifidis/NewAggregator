@@ -8,4 +8,5 @@ public record Article(
         String title,
         String url,
         String summary,
-        Instant publishedAt) {}
+        Instant publishedAt
+) {}

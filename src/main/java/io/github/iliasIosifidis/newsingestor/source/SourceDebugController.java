@@ -20,7 +20,7 @@ public class SourceDebugController {
   @GetMapping("/{name}")
   List<Article> fetch(@PathVariable String name){
     return sources.stream()
-            .filter(s ->s.name().equals(name))
+            .filter(s -> s.name().equals(name))
             .findFirst()
             .orElseThrow()
             .fetchLatest();

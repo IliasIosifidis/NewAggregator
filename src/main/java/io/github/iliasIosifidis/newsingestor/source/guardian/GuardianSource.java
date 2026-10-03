@@ -6,16 +6,35 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class GuardianSource implements NewsSource {
 
-  private final RestClient restClient;
   private final GuardianProperties props;
+  private final RestClient restClient; // null when disabled
+  private final String disabledReason; // null when enabled
 
   GuardianSource(RestClient.Builder builder, GuardianProperties props) {
     this.props = props;
-    this.restClient = builder.baseUrl(props.baseUrl()).build();
+    String reason = validate(props);
+    RestClient client = null;
+    if (reason == null){
+      try{
+        client = builder.baseUrl(props.baseUrl()).build();
+      } catch (RuntimeException e){
+        reason = "invalid base URL: " +e.getMessage();
+      }
+    }
+    this.restClient = client;
+    this.disabledReason = reason;
+  }
+
+  private static String validate(GuardianProperties props) {
+    if (props.apiKey() == null || props.apiKey().isBlank()) {return "missing API key";}
+    if (props.baseUrl() == null || props.baseUrl().isBlank()) {return "missing base URL";}
+    if (props.pageSize() <= 0) {return "page size must be positive";}
+    return null;
   }
 
   @Override
@@ -24,7 +43,16 @@ public class GuardianSource implements NewsSource {
   }
 
   @Override
+  public Optional<String> disabledReason(){
+    return Optional.ofNullable(disabledReason);
+  }
+
+  @Override
   public List<Article> fetchLatest() {
+    // Guard Clause pattern
+    if (disabledReason != null){
+      throw new IllegalStateException("guardian is disabled: " + disabledReason);
+    }
     GuardianResponse response = restClient.get()
             .uri(uri -> uri.path("/search")
                     .queryParam("order-by", "newest")

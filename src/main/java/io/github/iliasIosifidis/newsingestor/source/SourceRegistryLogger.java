@@ -20,7 +20,13 @@ public class SourceRegistryLogger implements ApplicationRunner {
 
   @Override
   public void run(ApplicationArguments args){
-    log.info("Loaded {} news source(s): {}", sources.size(),
-            sources.stream().map(NewsSource::name).toList());
+    for (NewsSource s: sources){
+      s.disabledReason().ifPresentOrElse(
+              reason -> log.warn("Source '{}' DISABLES: {}", s.name(), reason),
+              () -> log.info("Source '{}' enabled", s.name()));
+    }
+    if (sources.stream().allMatch(s -> s.disabledReason().isPresent())){
+      log.error("No enabled news sources: the ingestor will fetch nothing");
+    }
   }
 }

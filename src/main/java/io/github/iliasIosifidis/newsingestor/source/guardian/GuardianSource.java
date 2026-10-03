@@ -2,12 +2,15 @@ package io.github.iliasIosifidis.newsingestor.source.guardian;
 
 import io.github.iliasIosifidis.newsingestor.article.Article;
 import io.github.iliasIosifidis.newsingestor.source.NewsSource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class GuardianSource implements NewsSource {
 
@@ -63,9 +66,19 @@ public class GuardianSource implements NewsSource {
             .retrieve()
             .body(GuardianResponse.class);
 
-    return response.response().results().stream()
-            .map(this::toArticle)
-            .toList();
+    if (response == null || response.response() == null || response.response().results() == null){
+      throw new IllegalStateException("unexpected response shape");
+    }
+
+    List<Article> articles = new ArrayList<>();
+    for (GuardianResponse.Result r : response.response().results()){
+      try {
+        articles.add(toArticle(r));
+      } catch (RuntimeException e){
+        log.warn("guardian skipped article {}: {} ", r.id(), e.getMessage());
+      }
+    }
+    return articles;
   }
 
   private Article toArticle(GuardianResponse.Result r){

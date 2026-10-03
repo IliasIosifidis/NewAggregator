@@ -6,6 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.util.List;
 
@@ -28,11 +31,18 @@ public class IngestionScheduler {
       try {
         List<Article> articles = source.fetchLatest();
         log.info("{}: fetched {} articles", source.name(), articles.size());
+      } catch (HttpClientErrorException e){
+        log.error("{}: request rejected with {}, check this source's configuration",
+                source.name(), e.getStatusCode());
+      } catch (HttpServerErrorException e){
+        log.warn("{}: source returned {}, will retry next cycle",
+                source.name(), e.getStatusCode());
+      } catch (ResourceAccessException e){
+        log.warn("{}: unreachable: {}", source.name(),
+                NestedExceptionUtils.getMostSpecificCause(e).toString());
       } catch (Exception e){
-        log.warn("{}: fetch failed: {}", source.name(),
-                NestedExceptionUtils.getMostSpecificCause(e).toString()
-//                e.getMessage()
-        );
+        log.error("{}: unexpected failure: {}", source.name(),
+                NestedExceptionUtils.getMostSpecificCause(e).toString());
       }
     }
   }

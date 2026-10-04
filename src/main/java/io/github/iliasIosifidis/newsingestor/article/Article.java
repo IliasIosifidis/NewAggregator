@@ -28,4 +28,8 @@ public record Article(
       throw new IllegalArgumentException("publishedAt is required");
     }
   }
+
+  public String key(){
+    return source + ":" + externalId;
+  }
 }

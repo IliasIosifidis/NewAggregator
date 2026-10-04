@@ -23,11 +23,11 @@ public class GuardianSource implements NewsSource {
     this.props = props;
     String reason = validate(props);
     RestClient client = null;
-    if (reason == null){
-      try{
+    if (reason == null) {
+      try {
         client = builder.baseUrl(props.baseUrl()).build();
-      } catch (RuntimeException e){
-        reason = "invalid base URL: " +e.getMessage();
+      } catch (RuntimeException e) {
+        reason = "invalid base URL: " + e.getMessage();
       }
     }
     this.restClient = client;
@@ -35,9 +35,15 @@ public class GuardianSource implements NewsSource {
   }
 
   private static String validate(GuardianProperties props) {
-    if (props.apiKey() == null || props.apiKey().isBlank()) {return "missing API key";}
-    if (props.baseUrl() == null || props.baseUrl().isBlank()) {return "missing base URL";}
-    if (props.pageSize() <= 0) {return "page size must be positive";}
+    if (props.apiKey() == null || props.apiKey().isBlank()) {
+      return "missing API key";
+    }
+    if (props.baseUrl() == null || props.baseUrl().isBlank()) {
+      return "missing base URL";
+    }
+    if (props.pageSize() <= 0) {
+      return "page size must be positive";
+    }
     return null;
   }
 
@@ -47,14 +53,14 @@ public class GuardianSource implements NewsSource {
   }
 
   @Override
-  public Optional<String> disabledReason(){
+  public Optional<String> disabledReason() {
     return Optional.ofNullable(disabledReason);
   }
 
   @Override
   public List<Article> fetchLatest() {
     // Guard Clause pattern
-    if (disabledReason != null){
+    if (disabledReason != null) {
       throw new IllegalStateException("guardian is disabled: " + disabledReason);
     }
     GuardianResponse response = restClient.get()
@@ -67,22 +73,22 @@ public class GuardianSource implements NewsSource {
             .retrieve()
             .body(GuardianResponse.class);
 
-    if (response == null || response.response() == null || response.response().results() == null){
+    if (response == null || response.response() == null || response.response().results() == null) {
       throw new IllegalStateException("unexpected response shape");
     }
 
     List<Article> articles = new ArrayList<>();
-    for (GuardianResponse.Result r : response.response().results()){
+    for (GuardianResponse.Result r : response.response().results()) {
       try {
         articles.add(toArticle(r));
-      } catch (RuntimeException e){
+      } catch (RuntimeException e) {
         log.warn("guardian skipped article {}: {} ", r.id(), e.getMessage());
       }
     }
     return articles;
   }
 
-  private Article toArticle(GuardianResponse.Result r){
+  private Article toArticle(GuardianResponse.Result r) {
     String summary = r.fields() != null ? r.fields().trailText() : null;
     return new Article(
             name(),

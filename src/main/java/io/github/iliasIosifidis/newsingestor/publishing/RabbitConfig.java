@@ -1,9 +1,10 @@
 package io.github.iliasIosifidis.newsingestor.publishing;
 
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.converter.JacksonJsonMessageConverter;
 import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
@@ -16,7 +17,7 @@ public class RabbitConfig {
   }
 
   @Bean
-  JacksonJsonMessageConverter messageConverter(JsonMapper jsonMapper){
+  MessageConverter messageConverter(JsonMapper jsonMapper){
     return new JacksonJsonMessageConverter(jsonMapper);
   }
 }

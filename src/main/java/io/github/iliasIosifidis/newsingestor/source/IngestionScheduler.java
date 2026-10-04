@@ -5,7 +5,6 @@ import io.github.iliasIosifidis.newsingestor.dedup.SeenArticles;
 import io.github.iliasIosifidis.newsingestor.publishing.ArticlePublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.AmqpException;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -52,7 +51,7 @@ public class IngestionScheduler {
         for (Article article : fresh) {
           try {
             publisher.publish(article);
-          } catch (AmqpException e) {
+          } catch (RuntimeException e) {
             seenArticles.forget(article);
             log.warn("{}: publish failed for {}, will retry next cycle: {}",
                     source.name(), article.key(), e.getMessage());

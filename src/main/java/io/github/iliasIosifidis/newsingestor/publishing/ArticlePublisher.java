@@ -2,7 +2,9 @@ package io.github.iliasIosifidis.newsingestor.publishing;
 
 import io.github.iliasIosifidis.newsingestor.article.Article;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ArticlePublisher {
   private final RabbitTemplate rabbitTemplate;
 

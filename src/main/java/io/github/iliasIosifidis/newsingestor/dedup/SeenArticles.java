@@ -16,10 +16,14 @@ public class SeenArticles {
             .build();
   }
 
-  /**Returns new if the article is new and remembers if from now on. */
+  // Returns new if the article is new and remembers if from now on.
   public boolean markIfNew(Article article){
     return seen
             .asMap()
             .putIfAbsent(article.key(), Boolean.TRUE) == null; //putIfAbsent is atomic
+  }
+
+  public void forget(Article article){
+    seen.invalidate(article.key());
   }
 }

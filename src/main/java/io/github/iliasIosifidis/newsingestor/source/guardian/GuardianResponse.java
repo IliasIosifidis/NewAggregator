@@ -1,6 +1,5 @@
 package io.github.iliasIosifidis.newsingestor.source.guardian;
 
-import java.time.Instant;
 import java.util.List;
 
 public record GuardianResponse(Body response) {
@@ -11,7 +10,7 @@ public record GuardianResponse(Body response) {
           String id,
           String webTitle,
           String webUrl,
-          Instant webPublicationDate,
+          String webPublicationDate,
           Fields fields){}
 
   record Fields(String trailText){}

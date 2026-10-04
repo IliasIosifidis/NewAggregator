@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -89,6 +90,6 @@ public class GuardianSource implements NewsSource {
             r.webTitle(),
             r.webUrl(),
             summary,
-            r.webPublicationDate());
+            Instant.parse(r.webPublicationDate()));
   }
 }

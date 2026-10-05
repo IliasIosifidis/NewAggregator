@@ -1,0 +1,26 @@
+package io.github.iliasiosifidis.articlestore.article;
+
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.time.Instant;
+
+public interface ArticleRepository extends JpaRepository<Article,Long> {
+
+  @Modifying
+  @Transactional
+  @Query(value = """
+            INSERT INTO articles (source, external_id, title, url, summary, published_at, received_at)
+            VALUES (:source, :externalId, :title, :url, :summary, :publishedAt, now())
+            ON CONFLICT (source, external_id) DO NOTHING
+            """, nativeQuery = true)
+  int insertIfAbsent (@Param("source") String source,
+                      @Param("externalId") String externalId,
+                      @Param("title") String title,
+                      @Param("url") String url,
+                      @Param("summary") String summary,
+                      @Param("publishedAt")Instant publishedAt);
+}

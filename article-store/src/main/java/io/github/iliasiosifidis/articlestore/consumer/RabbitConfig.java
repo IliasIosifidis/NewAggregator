@@ -1,4 +1,4 @@
-package io.github.iliasiosifidis.articlestore;
+package io.github.iliasiosifidis.articlestore.consumer;
 
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.amqp.core.*;

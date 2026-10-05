@@ -26,7 +26,7 @@ class ArticleController {
           @RequestParam(required = false) String source,
           @PageableDefault(
                   size = 20,
-                  sort = "publishedAt",
+                  sort = {"publishedAt", "id"},
                   direction = Sort.Direction.DESC)
           Pageable pageable) {
     if (source == null || source.isBlank()){

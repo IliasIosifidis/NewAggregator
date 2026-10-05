@@ -19,8 +19,7 @@ public class ArticleListener {
 
   @RabbitListener(queues = RabbitConfig.QUEUE)
   void onArticle(ArticleMessage message) {
-    int inserted = repository.insertIfAbsent(
-            message.source(), message.externalId(), message.title(), message.url(), message.summary(), message.publishedAt());
+    int inserted = repository.insertIfAbsent(message.source(), message.externalId(), message.title(), message.url(), message.summary(), message.publishedAt());
     if (inserted == 1){
       log.info("Stored {}:{}", message.source(), message.externalId());
     } else {

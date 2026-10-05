@@ -1,0 +1,1 @@
+ALTER TABLE articles ALTER COLUMN received_at SET DEFAULT now()

@@ -13,20 +13,49 @@ class RabbitConfig {
 
   static final String EXCHANGE = "news.articles";
   static final String QUEUE = "article-store.articles";
+  static final String DLX = "news.articles.dlx";
+  static final String DLQ = "article-store.articles.dlq";
 
+  // Main flow
   @Bean
   TopicExchange articlesExchange() {
     return new TopicExchange(EXCHANGE, true, false);
   }
 
   @Bean
-  Queue articlesQueue() {
-    return QueueBuilder.durable(QUEUE).build();
+  Queue articlesQueue(){
+    return QueueBuilder.durable(QUEUE)
+            .deadLetterExchange(DLX)
+            .deadLetterRoutingKey(DLQ)
+            .build();
   }
 
   @Bean
   Binding articlesBinding(Queue articlesQueue, TopicExchange articlesExchange) {
-    return BindingBuilder.bind(articlesQueue).to(articlesExchange).with("article.#");
+    return BindingBuilder
+            .bind(articlesQueue)
+            .to(articlesExchange)
+            .with("article.#");
+  }
+
+  // Dead letters
+
+  @Bean
+  DirectExchange deadLetterExchange(){
+    return new DirectExchange(DLX, true,false);
+  }
+
+  @Bean
+  Queue deadLetterQueue(){
+    return QueueBuilder.durable(DLQ).build();
+  }
+
+  @Bean
+  Binding deadLetterBinding(){
+    return BindingBuilder
+            .bind(deadLetterQueue())
+            .to(deadLetterExchange())
+            .with(DLQ);
   }
 
   @Bean

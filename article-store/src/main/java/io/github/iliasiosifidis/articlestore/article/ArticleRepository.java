@@ -15,8 +15,8 @@ public interface ArticleRepository extends JpaRepository<Article,Long> {
   @Modifying
   @Transactional
   @Query(value = """
-            INSERT INTO articles (source, external_id, title, url, summary, published_at, received_at)
-            VALUES (:source, :externalId, :title, :url, :summary, :publishedAt, now())
+            INSERT INTO articles (source, external_id, title, url, summary, published_at)
+            VALUES (:source, :externalId, :title, :url, :summary, :publishedAt)
             ON CONFLICT (source, external_id) DO NOTHING
             """, nativeQuery = true)
   int insertIfAbsent (@Param("source") String source,

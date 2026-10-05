@@ -4,3 +4,11 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: news
+      POSTGRES_USER: news
+      POSTGRES_PASSWORD: news
+    ports:
+      - "5433:5432"

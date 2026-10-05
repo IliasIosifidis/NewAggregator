@@ -1,4 +1,4 @@
-package io.github.iliasiosifidis;
+package io.github.iliasiosifidis.articlestore;
 
 import java.time.Instant;
 

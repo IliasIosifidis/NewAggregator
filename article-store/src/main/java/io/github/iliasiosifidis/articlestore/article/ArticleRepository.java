@@ -1,6 +1,8 @@
 package io.github.iliasiosifidis.articlestore.article;
 
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +25,6 @@ public interface ArticleRepository extends JpaRepository<Article,Long> {
                       @Param("url") String url,
                       @Param("summary") String summary,
                       @Param("publishedAt")Instant publishedAt);
+
+  Page<Article> findBySource(String source, Pageable pageable);
 }

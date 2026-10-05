@@ -1,4 +1,4 @@
-package io.github.iliasIosifidis.newsingestor.source.hackerNews;
+package io.github.iliasIosifidis.newsingestor.source.hackernews;
 
 import io.github.iliasIosifidis.newsingestor.article.Article;
 import io.github.iliasIosifidis.newsingestor.source.NewsSource;
@@ -54,7 +54,7 @@ public class HackerNewsSource implements NewsSource {
 
   @Override
   public String name() {
-    return "hacker news";
+    return "hackernews";
   }
 
 
@@ -95,7 +95,7 @@ public class HackerNewsSource implements NewsSource {
   }
 
   private boolean isUsableStory(HackerNewsItem item) {
-    return item != null
+    return item.url() != null
             && "story".equals(item.type())
             && !Boolean.TRUE.equals(item.deleted())
             && !Boolean.TRUE.equals(item.dead());
@@ -107,7 +107,7 @@ public class HackerNewsSource implements NewsSource {
     }
     return new Article(
             name(),
-            String.valueOf(item.id()),
+            String.valueOf(id),
             item.title(),
             item.url(),
             null,

@@ -1,4 +1,4 @@
-package io.github.iliasIosifidis.newsingestor.source.hackerNews;
+package io.github.iliasIosifidis.newsingestor.source.hackernews;
 
 record HackerNewsItem(
         Long id,

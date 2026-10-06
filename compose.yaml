@@ -1,4 +1,4 @@
-logging:
+x-logging: &default-logging
   driver: json-file
   options:
     max-size: "10m"
@@ -7,9 +7,11 @@ logging:
 services:
   rabbitmq:
     image: rabbitmq:4-management
+    restart: unless-stopped
+    logging: *default-logging
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
@@ -18,12 +20,14 @@ services:
 
   postgres:
     image: postgres:17
+    restart: unless-stopped
+    logging: *default-logging
     environment:
       POSTGRES_DB: news
       POSTGRES_USER: news
       POSTGRES_PASSWORD: news
     ports:
-      - "5433:5432"
+      - "127.0.0.1:5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -31,12 +35,14 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  
+
   news-ingestor:
     build: ./news-ingestor
     profiles: ["apps"]
+    restart: unless-stopped
+    logging: *default-logging
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     environment:
       SPRING_DOCKER_COMPOSE_ENABLED: "false"
       SPRING_RABBITMQ_HOST: rabbitmq
@@ -50,13 +56,14 @@ services:
     build: ./article-store
     profiles: ["apps"]
     ports:
-      - "8081:8081"
+      - "127.0.0.1:8081:8081"
     environment:
       SPRING_DOCKER_COMPOSE_ENABLED: "false"
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/news
       SPRING_DATASOURCE_USERNAME: news
       SPRING_DATASOURCE_PASSWORD: news
+      SERVER_FORWARD_HEADERS_STRATEGY: framework
     depends_on:
       rabbitmq:
         condition: service_healthy

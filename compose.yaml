@@ -4,6 +4,12 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   postgres:
     image: postgres:17
     environment:
@@ -12,3 +18,44 @@ services:
       POSTGRES_PASSWORD: news
     ports:
       - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U news -d news"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  
+  news-ingestor:
+    build: ./news-ingestor
+    profiles: ["apps"]
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DOCKER_COMPOSE_ENABLED: "false"
+      SPRING_RABBITMQ_HOST: rabbitmq
+      GUARDIAN_API_KEY: ${GUARDIAN_API_KEY}
+      NEWS_INGESTION_INTERVAL: PT5M
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  article-store:
+    build: ./article-store
+    profiles: ["apps"]
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DOCKER_COMPOSE_ENABLED: "false"
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/news
+      SPRING_DATASOURCE_USERNAME: news
+      SPRING_DATASOURCE_PASSWORD: news
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:

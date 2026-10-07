@@ -9,6 +9,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+import java.time.Duration;
 import java.util.List;
 
 @Component
@@ -27,10 +28,22 @@ public class Backfill implements ApplicationRunner {
 
   @Override
   public void run(ApplicationArguments args) throws Exception {
+    for (int attempt = 1; attempt <= 5; attempt++) {
+      try {
+        backfillIfIncomplete();
+      } catch (RuntimeException e){
+        log.error("Backfill failed, the index may be incomplete: {}", e.getMessage());
+        sleepQuietly(Duration.ofSeconds(10));
+      }
+    }
+    log.error("Backfill gave up after 5 attempts, the index may be incomplete until the next restart");
+  }
+
+  private static void sleepQuietly(Duration duration){
     try {
-      backfillIfIncomplete();
-    } catch (RuntimeException e){
-      log.error("Backfill failed, the index may be incomplete: {}", e.getMessage());
+      Thread.sleep(duration);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
     }
   }
 

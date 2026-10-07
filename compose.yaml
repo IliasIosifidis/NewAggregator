@@ -70,7 +70,7 @@ services:
       SPRING_RABBITMQ_HOST: rabbitmq
       GUARDIAN_API_KEY: ${GUARDIAN_API_KEY}
       NEWS_INGESTION_INTERVAL: PT5M
-      JAVA_TOOLS_OPTIONS: "-XX:MaxRAMPercentage=75"
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75"
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -78,6 +78,7 @@ services:
       resources:
         limits:
           memory: 512M
+
   article-store:
     build: ./article-store
     profiles: ["apps"]
@@ -91,7 +92,7 @@ services:
       SPRING_DATASOURCE_USERNAME: news
       SPRING_DATASOURCE_PASSWORD: news
       SERVER_FORWARD_HEADERS_STRATEGY: framework
-      JAVA_TOOLS_OPTIONS: "-XX:MaxRAMPercentage=75"
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75"
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -101,6 +102,30 @@ services:
       resources:
         limits:
           memory: 512M
+
+  search-service:
+    build: ./search-service
+    profiles: ["apps"]
+    restart: unless-stopped
+    logging: *default-logging
+    ports:
+      - "127.0.0.1:8082:8082"
+    environment:
+      SPRING_DOCKER_COMPOSE_ENABLED: "false"
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_ELASTICSEARCH_URIS: http://article-store:8081
+      JAVA_TOOL_OPTIONS: "-xx:MaxRAMPercentage=75"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      article-store:
+        condition: service_started
 
 volumes:
   pgdata:

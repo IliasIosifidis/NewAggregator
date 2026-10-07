@@ -6,6 +6,7 @@ import java.time.Instant;
 
 public record ArticleResponse(
         Long id,
+        String externalId,
         String source,
         String title,
         String url,
@@ -15,6 +16,7 @@ public record ArticleResponse(
   static ArticleResponse from(Article article){
     return new ArticleResponse(
             article.getId(),
+            article.getExternalId(),
             article.getSource(),
             article.getTitle(),
             article.getUrl(),

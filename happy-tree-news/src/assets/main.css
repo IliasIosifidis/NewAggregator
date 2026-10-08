@@ -1,0 +1,44 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Source Serif 4 is loaded from Google Fonts in index.html. */
+  --font-serif: 'Source Serif 4', ui-serif, Georgia, Cambria, 'Times New Roman', serif;
+
+  /* Deep greens for the title and interactive elements, matched to the forest background. */
+  --color-forest-50: #eef4ef;
+  --color-forest-100: #dbe8dd;
+  --color-forest-600: #2f6b47;
+  --color-forest-700: #24563a;
+  --color-forest-800: #1b432d;
+  --color-forest-900: #133022;
+  --color-forest-950: #0b1d14;
+
+  /* Muted per-source card colors, picked from each brand. Applied through constants/sources.ts. */
+  --color-hackernews-surface: #f8f1e9;
+  --color-hackernews-border: #e9d6c3;
+  --color-hackernews-accent: #a65219;
+
+  --color-guardian-surface: #ecf0f6;
+  --color-guardian-border: #cfd8e5;
+  --color-guardian-accent: #052962;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-serif);
+  }
+
+  body {
+    min-height: 100vh;
+    background-color: var(--color-forest-950);
+  }
+
+  /* A fixed layer rather than `background-attachment: fixed`, which mobile Safari ignores. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: url('./forest.jpg') center / cover no-repeat;
+  }
+}

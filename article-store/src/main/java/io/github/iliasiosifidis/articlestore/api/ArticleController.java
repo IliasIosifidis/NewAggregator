@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,7 +21,6 @@ class ArticleController {
     this.repository = repository;
   }
 
-
   @GetMapping
   Page<ArticleResponse> list(
           @RequestParam(required = false) String source,
@@ -33,5 +33,15 @@ class ArticleController {
       return repository.findAll(pageable).map(ArticleResponse::from);
     }
     return repository.findBySource(source, pageable).map(ArticleResponse::from);
+  }
+
+  @GetMapping("/by-key")
+  ResponseEntity<ArticleResponse> byKey(
+          @RequestParam String source,
+          @RequestParam String externalId){
+    return repository.findBySourceAndExternalId(source,externalId)
+            .map(ArticleResponse::from)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
   }
 }

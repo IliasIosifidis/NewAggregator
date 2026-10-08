@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.Instant;
+import java.util.Optional;
 
 public interface ArticleRepository extends JpaRepository<Article,Long> {
 
@@ -27,4 +28,6 @@ public interface ArticleRepository extends JpaRepository<Article,Long> {
                       @Param("publishedAt")Instant publishedAt);
 
   Page<Article> findBySource(String source, Pageable pageable);
+
+  Optional<Article> findBySourceAndExternalId(String source, String externalId);
 }

@@ -27,10 +27,11 @@ public class Backfill implements ApplicationRunner {
   }
 
   @Override
-  public void run(ApplicationArguments args) throws Exception {
+  public void run(ApplicationArguments args){
     for (int attempt = 1; attempt <= 5; attempt++) {
       try {
         backfillIfIncomplete();
+        return;
       } catch (RuntimeException e){
         log.error("Backfill failed, the index may be incomplete: {}", e.getMessage());
         sleepQuietly(Duration.ofSeconds(10));
@@ -53,12 +54,12 @@ public class Backfill implements ApplicationRunner {
     long indexed = repository.count();
     if (indexed >= total){
       log.info("Index complete ({} of {} articles), no backfill needed", indexed, total);
+      return;
     }
     log.info("Backfilling: {} indexed, {} in the article store", indexed, total);
     index(first);
     for (int page = 1; page < first.page().totalPages(); page++) {
       index(fetchPage(page));
-
     }
   }
 

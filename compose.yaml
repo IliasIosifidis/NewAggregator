@@ -86,6 +86,23 @@ services:
       elasticsearch:
         condition: service_healthy
 
+  kibana:
+    image: dicker.elastic.co/kibana/kibana:9.3.4
+    profiles: ["apps"]
+    restart: unless-stopped
+    logging: *default-logging
+    environment:
+      ELASTICSEARCH_HOSTS: '["http://elasticsearch"]'
+    ports:
+      - "127.0.0.1:5601:5601"
+    deploy:
+      resources:
+        limits:
+          memory: 2000M
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
   news-ingestor:
     build: ./news-ingestor
     profiles: ["apps"]

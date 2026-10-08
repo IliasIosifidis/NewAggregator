@@ -15,7 +15,7 @@ const emit = defineEmits<{
 <template>
   <!-- Height follows the content; long titles and summaries are clamped so a card never grows past its maximum. -->
   <article
-    class="flex flex-col rounded-2xl p-5 shadow-lg ring-1"
+    class="flex flex-col rounded-2xl p-5 bg-gray-400/10 shadow-lg ring-1"
     :class="sourceTheme(article.source).card"
   >
     <p

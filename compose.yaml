@@ -17,6 +17,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits: 
+          memory: 1G
 
   postgres:
     image: postgres:17
@@ -35,6 +39,10 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:9.3.4
@@ -58,6 +66,26 @@ services:
       timeout: 5s
       retries: 12
 
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:9.3.4
+    profiles: ["apps"]
+    user: root
+    command: ["--strict.perms=false"]
+    restart: unless-stopped
+    logging: *default-logging
+    volumes:
+      - ./observability/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - filebeatdata:/usr/share/filebeat/data
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
   news-ingestor:
     build: ./news-ingestor
     profiles: ["apps"]
@@ -71,6 +99,7 @@ services:
       GUARDIAN_API_KEY: ${GUARDIAN_API_KEY}
       NEWS_INGESTION_INTERVAL: PT5M
       JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75"
+      LOGGING_STRUCTURED_FORMAT_CONSOLE: ecs
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -92,6 +121,7 @@ services:
       SPRING_ELASTICSEARCH_URIS: http://elasticsearch:9200
       SEARCH_BACKFILL_ARTICLE_STORE_URL: http://article-store:8081
       JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75"
+      LOGGING_STRUCTURED_FORMAT_CONSOLE: ecs
     deploy:
       resources:
         limits:
@@ -118,6 +148,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: news
       SERVER_FORWARD_HEADERS_STRATEGY: framework
       JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75"
+      LOGGING_STRUCTURED_FORMAT_CONSOLE: ecs
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -148,3 +179,4 @@ services:
 volumes:
   pgdata:
   esdata:
+  filebeatdata:

@@ -1,0 +1,28 @@
+filebeat.inputs:
+  - type: filestream
+    id: docker-containers
+    paths:
+     - /var/lib/docker/containers/*/*.log
+    parsers:
+     - container: ~
+     - ndjson:
+         target: ""
+         overwrite_keys: true
+         expand_keys: true
+         ignore_decoding_error: true
+
+processors:
+  - add_docker_metadata: ~
+  - drop_event:
+    when:
+      not:
+        or:
+          - contains:
+            container.name: "news-ingestor"
+          - contains:
+            container.name: "article-store"
+          - contains:
+            container.name: "search-service"
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]

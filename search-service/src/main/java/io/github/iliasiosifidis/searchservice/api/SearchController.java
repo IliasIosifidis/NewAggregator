@@ -1,4 +1,4 @@
-package io.github.iliasiosifidis.searchservice.controller;
+package io.github.iliasiosifidis.searchservice.api;
 
 import io.github.iliasiosifidis.searchservice.search.ArticleSearchService;
 import org.springframework.web.bind.annotation.GetMapping;

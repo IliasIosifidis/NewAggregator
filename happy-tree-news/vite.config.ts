@@ -12,6 +12,9 @@ const apiProxy = {
   '/api/search': {
     target: 'http://localhost:8082',
   },
+  '/api/activity': {
+    target: 'http://localhost:8082',
+  },
   '/api': {
     target: 'http://localhost:8081',
     changeOrigin: true,

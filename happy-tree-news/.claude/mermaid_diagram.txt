@@ -1,0 +1,15 @@
+```mermaid
+flowchart TD
+    G[The Guardian API] --> I[news-ingestor]
+    H[Hacker News API] --> I
+    I -->|publish| R[(RabbitMQ<br/>news.articles)]
+    R -->|consume| A[article-store]
+    R -->|consume| S[search-service]
+    A --> P[(PostgreSQL)]
+    S --> E[(Elasticsearch)]
+    S -.->|backfill at startup| A
+    B[Browser] --> N[nginx]
+    N -->|/api/articles| A
+    N -->|/api/search<br/>/api/activity| S
+    F[Filebeat] -->|container logs| E
+```

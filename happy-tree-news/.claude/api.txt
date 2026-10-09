@@ -1,0 +1,21 @@
+Backend API (all paths relative; Vite proxies them in development, nginx in production)
+
+GET /api/articles?source={guardian|hackernews}&page={n}&size={n}
+  → { content: [{ id, source, externalId, title, url, summary, publishedAt }],
+      page: { size, number, totalElements, totalPages } }
+  Newest first. Max size 100. `summary` may contain HTML: render as plain text, never v-html.
+
+GET /api/articles/by-key?source={source}&externalId={externalId}
+  → a single article (same fields), or 404 if it doesn't exist.
+  Build the URL with URLSearchParams: Guardian externalIds contain slashes.
+
+GET /api/search?q={text}&source={optional}&size={1..20, default 10}
+  → [{ source, externalId, title, url, summary, publishedAt }]
+  Prefix and typo tolerant. An empty q returns [].
+
+GET /api/activity
+  → { "news-ingestor":  [{ timestamp, message }],
+      "article-store":  [{ timestamp, message }],
+      "search-service": [{ timestamp, message }] }
+  The latest 5 curated activity messages per service, newest first.
+  Can be empty right after a restart, or when running the services from the IDE.

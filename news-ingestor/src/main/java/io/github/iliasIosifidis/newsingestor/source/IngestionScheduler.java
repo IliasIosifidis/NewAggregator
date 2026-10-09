@@ -19,6 +19,7 @@ import java.util.List;
 public class IngestionScheduler {
 
   private static final Logger log = LoggerFactory.getLogger(IngestionScheduler.class);
+  private static final Logger activity = LoggerFactory.getLogger("activity");
   private final List<NewsSource> sources;
   private final SeenArticles seenArticles;
   private final ArticlePublisher publisher;
@@ -32,8 +33,8 @@ public class IngestionScheduler {
   }
 
   @Scheduled(initialDelayString = "PT5S", // Period of Time: 5 seconds
-          fixedDelayString = "${news.ingestion.interval:PT15M}")
-    // Default, when the property is missing
+          fixedDelayString = "${news.ingestion.interval:PT15M}") // Default, when the property is missing
+
   void pollAll() {
     for (NewsSource source : sources) {
       try {
@@ -56,6 +57,10 @@ public class IngestionScheduler {
             log.warn("{}: publish failed for {}, will retry next cycle: {}",
                     source.name(), article.key(), e.getMessage());
           }
+        }
+
+        if (!fresh.isEmpty()){
+          activity.info("Fetched {} new articles from {}", fresh.size(), source.name());
         }
 
       } catch (HttpClientErrorException e) {

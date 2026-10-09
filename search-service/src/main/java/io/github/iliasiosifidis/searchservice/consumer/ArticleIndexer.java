@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 public class ArticleIndexer {
 
   private static final Logger log = LoggerFactory.getLogger(ArticleIndexer.class);
+  private static final Logger activity = LoggerFactory.getLogger("activity");
   private final ArticleSearchRepository repository;
 
   public ArticleIndexer(ArticleSearchRepository repository) {
@@ -27,5 +28,6 @@ public class ArticleIndexer {
             message.summary(),
             message.publishedAt()));
     log.info("Indexed {}:{}", message.source(), message.externalId());
+    activity.info("Indexed \"{}\"", message.title());
   }
 }

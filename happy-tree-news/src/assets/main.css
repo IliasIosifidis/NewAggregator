@@ -13,6 +13,10 @@
   --color-forest-900: #133022;
   --color-forest-950: #0b1d14;
 
+  /* Bark browns for the links between pages. */
+  --color-bark-700: #6b4226;
+  --color-bark-900: #3f2716;
+
   /* Muted per-source card colors, picked from each brand. Applied through constants/sources.ts. */
   --color-hackernews-surface: #f8f1e9;
   --color-hackernews-border: #e9d6c3;

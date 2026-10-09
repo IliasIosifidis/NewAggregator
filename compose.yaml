@@ -139,6 +139,7 @@ services:
       SEARCH_BACKFILL_ARTICLE_STORE_URL: http://article-store:8081
       JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75"
       LOGGING_STRUCTURED_FORMAT_CONSOLE: ecs
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB: DEBUG
     deploy:
       resources:
         limits:

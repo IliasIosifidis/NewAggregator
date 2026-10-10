@@ -22,9 +22,8 @@ function emptyText() {
 }
 </script>
 
-<!-- On wide screens the panel is as tall as the page and scrolls if the messages don't fit. -->
 <template>
-  <section aria-label="Service activity" class="flex flex-col gap-3 md:overflow-y-auto">
+  <section aria-label="Service activity" class="flex flex-col gap-3">
     <p v-if="failed && activity" class="rounded-full bg-white/90 px-4 py-1 text-sm text-red-600 shadow">
       Could not refresh; showing the last activity loaded.
     </p>

@@ -9,8 +9,7 @@ const { activity, failed } = useActivity()
 </script>
 
 <template>
-  <!-- The forest fills the whole page below the top bar. Wide screens fit everything without scrolling. -->
-  <div class="flex min-h-svh flex-col md:h-svh">
+  <div>
     <TopBar>
       <template #start class="flex flex-row">
         <PageLink to="/">
@@ -27,26 +26,23 @@ const { activity, failed } = useActivity()
       </template>
     </TopBar>
 
-    <!-- Activity on the left, the map on the right. Phones stack them and scroll the page. -->
-    <main class="relative flex flex-1 flex-col gap-4 overflow-hidden p-4 md:min-h-0 md:flex-row">
-      <!-- The map is taller than most screens are wide, so a blurred copy fills the space around it. -->
-      <img
-          :src="forestPaths"
-          alt=""
-          class="absolute inset-0 size-full scale-110 object-cover blur-2xl brightness-50"
+    <!-- On wider screens the map is the page's background, as wide as the page, and you scroll down it to follow the
+         paths. The activity panel sits over its top-left corner, which is only trees. Phones have no room beside the
+         panel, so the panel comes first and the map follows it. -->
+    <main class="grid">
+      <ActivityPanel
+          :activity="activity"
+          :failed="failed"
+          class="relative m-4 md:col-start-1 md:row-start-1 md:w-80 md:self-start lg:w-96"
       />
 
-      <ActivityPanel :activity="activity" :failed="failed" class="relative md:w-80 md:shrink-0 lg:w-96" />
-
-      <div class="relative aspect-[1600/2478] md:aspect-auto md:flex-1">
-        <img
-            :src="forestPaths"
-            width="1600"
-            height="2478"
-            alt="Map of the Forest News services as paths through a forest. The news sources lead to the news ingestor, which publishes to RabbitMQ. The article store and search service consume from RabbitMQ; the article store keeps articles in PostgreSQL and the search service in Elasticsearch. The Forest News front end calls both."
-            class="absolute inset-0 size-full object-contain drop-shadow-2xl"
-        />
-      </div>
+      <img
+          :src="forestPaths"
+          width="1600"
+          height="2478"
+          alt="Map of the Forest News services as paths through a forest. The news sources lead to the news ingestor, which publishes to RabbitMQ. The article store and search service consume from RabbitMQ; the article store keeps articles in PostgreSQL and the search service in Elasticsearch. The Forest News front end calls both."
+          class="w-full md:col-start-1 md:row-start-1"
+      />
     </main>
   </div>
 </template>

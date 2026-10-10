@@ -31,11 +31,11 @@ export const SOURCES: NewsSource[] = [
     },
   },
   {
-    id: 'current',
+    id: 'currents',
     label: 'Current News',
     theme: {
-      card: 'bg-current-surface ring-current-border',
-      accent: 'text-current-accent',
+      card: 'bg-currents-surface ring-currents-border',
+      accent: 'text-currents-accent',
     },
   },
 ]

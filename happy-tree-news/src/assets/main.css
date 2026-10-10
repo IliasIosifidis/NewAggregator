@@ -26,9 +26,9 @@
   --color-guardian-border: #cfd8e5;
   --color-guardian-accent: #052962;
 
-  --color-current-surface: rgba(234, 247, 250, 0.9);
-  --color-current-border: #c2d5d8;
-  --color-current-accent: #055462;
+  --color-currents-surface: rgba(236, 244, 246, 0.9);
+  --color-currents-border: #c2d5d8;
+  --color-currents-accent: #055462;
 }
 
 @layer base {

@@ -33,7 +33,7 @@ public class ActivityService {
     NativeQuery query = NativeQuery.builder()
             .withQuery(q -> q.bool( b -> b
                     .filter(f -> f.term(t -> t.field("log.logger").value("activity")))
-                    .filter(f -> f.term(t -> t.field("service-name").value(service)))))
+                    .filter(f -> f.term(t -> t.field("service.name").value(service)))))
             .withSort(s -> s.field(fs -> fs.field("@timestamp").order(SortOrder.Desc)))
             .withMaxResults(PER_SERVICE)
             .build();

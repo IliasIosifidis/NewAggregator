@@ -30,6 +30,14 @@ export const SOURCES: NewsSource[] = [
       accent: 'text-guardian-accent',
     },
   },
+  {
+    id: 'current',
+    label: 'Current News',
+    theme: {
+      card: 'bg-current-surface ring-current-border',
+      accent: 'text-current-accent',
+    },
+  },
 ]
 
 const DEFAULT_THEME: SourceTheme = {

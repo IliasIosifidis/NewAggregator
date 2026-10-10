@@ -18,13 +18,17 @@
   --color-bark-900: #3f2716;
 
   /* Muted per-source card colors, picked from each brand. Applied through constants/sources.ts. */
-  --color-hackernews-surface: #f8f1e9;
+  --color-hackernews-surface: rgba(248, 241, 233, 0.9);
   --color-hackernews-border: #e9d6c3;
   --color-hackernews-accent: #a65219;
 
-  --color-guardian-surface: #ecf0f6;
+  --color-guardian-surface: rgba(236, 240, 246, 0.9);
   --color-guardian-border: #cfd8e5;
   --color-guardian-accent: #052962;
+
+  --color-current-surface: rgba(234, 247, 250, 0.9);
+  --color-current-border: #c2d5d8;
+  --color-current-accent: #055462;
 }
 
 @layer base {
